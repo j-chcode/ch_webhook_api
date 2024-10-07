@@ -1,37 +1,12 @@
 #include <amxmodx>
 #include <webhook>
 
-new weblog[3];
-new const weblog_cvars[][][] = {
-	{ "weblog_chat", "1" },
-	{ "weblog_connect", "1" },
-	{ "weblog_server", "1" }
-};
-
-enum weblog_cv {
-	NAME = 0,
-	VALUE = 1
-};
-
-enum weblog_id {
-	CHAT = 0,
-	CONNECT = 1,
-	SERVER = 2
-};
-
 public plugin_init() {
 	register_plugin("[CH] Webhook Log", "v2.1.0", "--chcode");
 	register_clcmd("say", "say_handle");
-	
-	for(new cvar = 0; cvar < 3; cvar++) {
-		weblog[cvar] = register_cvar(weblog_cvars[cvar][NAME], weblog_cvars[cvar][VALUE]);
-	}
 }
 
 public started() {
-	if(!get_pcvar_num(weblog[SERVER]))
-		return;
-		
 	new server_info[512];
 	
 	new map[32];
@@ -43,9 +18,6 @@ public started() {
 
 public plugin_precache() {
 	if(!task_exists(666)) {
-		if(!get_pcvar_num(weblog[SERVER]))
-			return;
-		
 		set_task((60.0 * 3.50), "status_task", 666, _, _, "b");
 		started();
 	}
@@ -74,9 +46,6 @@ public get_bots() {
 }
 
 public say_handle(id) {
-	if(!get_pcvar_num(weblog[CHAT]))
-		return;
-		
 	new args[512];
 	read_args(args, charsmax(args));
 	remove_quotes(args);
@@ -93,9 +62,6 @@ public say_handle(id) {
 }
 
 public client_connect(id) {
-	if(!get_pcvar_num(weblog[CONNECT]))
-		return;
-		
 	if(is_user_bot(id))
 		return;
 		
@@ -117,9 +83,6 @@ public client_connect(id) {
 }
 
 public client_disconnected(id) {
-	if(!get_pcvar_num(weblog[CONNECT]))
-		return;
-		
 	if(is_user_bot(id))
 		return;
 		
@@ -141,9 +104,6 @@ public client_disconnected(id) {
 }
 
 public client_putinserver(id) {
-	if(!get_pcvar_num(weblog[CONNECT]))
-		return;
-		
 	if(is_user_bot(id))
 		return;
 		
